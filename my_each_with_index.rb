@@ -33,35 +33,34 @@ module Enumerable
     end
     result
   end
+  end
 
   def my_count
     count = 0
-    self.my_each { |i| i += 1 }
+    self.my_each { count += 1 }
     count
   end
 
   def my_map(my_proc)
-    result = []
-    self.my_each do |i|
-      result.push(my_proc != nil ? my_proc.call(i) : yield(i))
-    end
-    result
+    final = []
+    self.my_each { |i| final.push(my_proc != nil ? my_proc.call(i) : yield(i)) }
+    final
   end
 
-  def my_inject(acc = nil)
-    acc, *b = self
-    self.my_each { |i| acc = yield(acc, i) }
-    acc
+  def my_inject(sum = 0)
+    self.my_each { |i| sum = yield(sum,i) }
+    sum
   end
+    
 end
 
 my_proc = Proc.new { |i| i.upcase }
 
-array = [2, 5, 7, 6, 1]
+array = [3, 6, 8, 5, 1]
 checker = ["string"]
 
 array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
-array.my_select { |i| puts i.even? }
+array.my_select { |i| puts i.odd? }
 array.my_all? { |i| puts i >= 4 }
 checker.my_any? { |i| puts i.is_a? String }
 array.my_none? { |i| puts i == 7 }
