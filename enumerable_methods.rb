@@ -9,21 +9,30 @@ module Enumerable
     end
   end
 
+  def my_each_with_index
+    i = 0
+    for i in i...self.length
+      yield(self[i], i)
+    end
+  end
+
   def my_select
     array = []
     self.my_each { |i| array << array[i] if yield(i) }
   end
+  end
 
   def my_all?
-    final = true
+    final = false
     self.my_each { |i| false unless yield(i) }
     final
   end
 
   def my_any?
-    result = false
-    self.my_each { |i| false unless yield(i) }
-    result
+      result = false
+      self.my_each { |i| false unless yield(i) }
+      result
+    end
   end
 
   def my_none?
@@ -49,11 +58,11 @@ module Enumerable
   end
 
   def my_inject(acc = nil)
-    acc, *b = self
+    acc = self
     self.my_each { |i| acc = yield(acc, i) }
     acc
   end
-end
+
 
 my_proc = Proc.new { |i| i.upcase }
 
@@ -61,6 +70,7 @@ array = [2, 5, 7, 6, 1]
 checker = ["string"]
 
 array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
+array.my_each_with_index { |i, y| puts "index: #{y} and value: #{i}" }
 array.my_select { |i| puts i.even? }
 array.my_all? { |i| puts i >= 4 }
 checker.my_any? { |i| puts i.is_a? String }
