@@ -25,13 +25,13 @@ module Enumerable
   def my_select
     return to_enum unless block_given?
     array = []
-      self.my_each { |i| array << array[i] if yield(i) }
+        self.my_each { |i| array << array[i] if yield(i) }
+        end
     end
-    
   end
 
   def my_all?
-    return to_enum unless block_given?
+    return true unless block_given?
     final = true
     self.my_each { |i| true unless yield(i) }
       end
@@ -40,7 +40,7 @@ module Enumerable
   end
 
   def my_any?
-    return to_enum unless block_given?
+    return true unless block_given?
     result = false
     self.my_each { |i| false unless yield(i) }
       end
@@ -62,7 +62,7 @@ module Enumerable
   def my_count
     return to_enum unless block_given?
     count = 0
-    self.my_each { |i| count += i }
+    self.my_each { |item| true unless yield(item)}
     count
     end
   end
@@ -116,7 +116,7 @@ puts
 # array.my_none? { |i| puts i == 7 }
 # 25.times { print "-"}
 # puts
-# puts array.my_count
+puts array.my_count
 # 25.times { print "-"}
 # puts
 # puts array.my_map(&my_proc)
