@@ -25,9 +25,7 @@ module Enumerable
     array = []
     self.my_each { |i| array << array[i] if yield(i) }
     end
-  end
-
-  
+  end  
 
   def my_all?
     final = true
@@ -79,37 +77,38 @@ end
 
 
 
+# Testing Sextion of the my_methods
 
-array = [1,2,3,4,5]
-checker = ["string"]
-my_proc = Proc.new { |i| i * 2 }
+# array = [1,2,3,4,5]
+# checker = ["string"]
+# my_proc = Proc.new { |i| i * 2 }
 
 
-array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
-25.times { print "-"}
-puts
-array.my_each_with_index  { |i,y| puts "index: #{y} and value: #{i}" }
-25.times { print "-"}
-puts
-array.my_select { |i| puts i.even? }
-25.times { print "-"}
-puts
-array.my_all? { |i| puts i >= 4 }
-25.times { print "-"}
-puts
-checker.my_any? { |i| puts i.is_a? String }
-25.times { print "-"}
-puts
-array.my_none? { |i| puts i == 7 }
-25.times { print "-"}
-puts
-puts array.my_count
-25.times { print "-"}
-puts
-puts array.my_map { |x| x**2}
-25.times { print "-"}
-puts
-p array.my_inject { |i, j| i + j }
+# array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
+# 25.times { print "-"}
+# puts
+# array.my_each_with_index  { |i,y| puts "index: #{y} and value: #{i}" }
+# 25.times { print "-"}
+# puts
+# array.my_select { |i| puts i.even? }
+# 25.times { print "-"}
+# puts
+# array.my_all? { |i| puts i >= 4 }
+# 25.times { print "-"}
+# puts
+# checker.my_any? { |i| puts i.is_a? String }
+# 25.times { print "-"}
+# puts
+# array.my_none? { |i| puts i == 7 }
+# 25.times { print "-"}
+# puts
+# puts array.my_count
+# 25.times { print "-"}
+# puts
+# puts array.my_map { |x| x**2}
+# 25.times { print "-"}
+# puts
+# p array.my_inject { |i, j| i + j }
 
 
 
