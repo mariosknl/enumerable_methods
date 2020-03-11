@@ -1,3 +1,9 @@
+
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity, Style/CaseEquality
+
+
 module Enumerable
   def my_each
       i = 0
@@ -49,14 +55,34 @@ module Enumerable
     count
   end
 
+  def my_map(&my_proc) 
+    final = []
+    my_each do |i| 
+      final << yield(i) if block_given? && yield(i) !=0 
+    end
+    print final 
+  end
+
+  def my_inject(acc = nil, operator = nil)
+    if !block_given?
+      if operator.nil?
+        operator = acc
+      end
+      operator.to_sym
+      my_each { |i| acc = acc.nil? ? i : acc.send(operator, i) }
+    else
+      my_each { |i| acc = acc.nil? ? i : yield(acc, i) }
+    end
+    acc
+  end
 end
-  
+
 
 
 
 array = [1,2,3,4,5]
 checker = ["string"]
-my_proc = Proc.new { |i| i.upcase}
+my_proc = Proc.new { |i| i * 2 }
 
 
 array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
@@ -78,3 +104,14 @@ array.my_none? { |i| puts i == 7 }
 25.times { print "-"}
 puts
 puts array.my_count
+25.times { print "-"}
+puts
+puts array.my_map { |x| x**2}
+25.times { print "-"}
+puts
+p array.my_inject { |i, j| i + j }
+
+
+
+# rubocop:enable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity, Style/CaseEquality
+
