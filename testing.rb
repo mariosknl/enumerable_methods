@@ -1,9 +1,10 @@
-module Enumerable
+module Enumerable  
   def my_each
     return to_enum(:my_each) unless block_given?
     i = 0
-      while i < self.length
-        yield(self[i])
+    array = to_a
+      while i < array.length
+        yield(array[i])
         i += 1
       end
   end
@@ -11,15 +12,20 @@ module Enumerable
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
     i = 0
-      for i in i...self.size
-        yield(self[i], i)
+    array = to_a
+      for i in i...array.length
+        yield(array[i], i)
       end
   end
 
-  def my_select
+  def my_select(&block)
     array = []
-      my_each { |i| array << i if yield(i) }
+    if block_given?
+      my_each { |i| array << i if block.call }
+      return array
+    else
       to_enum
+    end
   end
 
   def my_all?(args= nil, &block)
@@ -28,17 +34,17 @@ module Enumerable
         my_each { |i| final << yield(i) if yield(i) != 0 } and return final if block_given?
         to_enum
       end
-    end
+  end
 
   def my_any?(args = nil, &block)
     final = false
     if block 
       my_each { |i| final = true if block.call(i)}
-      elsif args.nil?
+    elsif args.nil?
         my_each { |i| final = true if i}
-      else
+    else
         my_each { |i| final = true if args === item }
-      end
+    end
       final
   end
 
@@ -68,9 +74,13 @@ module Enumerable
   end
 
   def my_map
-      final = []
-      my_each { |i| final << yield(i) if yield(i) != 0 } and return final if block_given?
+    final = []
+      if block_given?
+      my_each { |i| final << yield(i) if yield(i) != 0 }
+      return final
+      else
       to_enum
+      end
   end
 
   def my_inject(acc = nil, operator = nil)
@@ -88,36 +98,9 @@ module Enumerable
   end
 end
 
-# Testing Section of my_methods
 
-array = [1,2,3,4,5]
-checker = ["string"]
-my_proc = Proc.new { |i| i * 2 }
+array = { a: "1", b: "2", c: "3"}
+array2 = (0..5)
 
-# array.my_each { |i| puts "#{i} * 2 = #{i * 2}" }
-# 25.times { print "-"}
-# puts
-# array.my_each_with_index  { |i,y| puts "index: #{y} and value: #{i}" }
-25.times { print "-"}
-puts
-# array.my_select { |i| puts i.even? }
-25.times { print "-"}
-puts
-array.my_all? { |i| puts i >= 4 }
-25.times { print "-"}
-puts
-checker.my_any? { |i| puts i.is_a? String }
-25.times { print "-"}
-puts
-array.my_none? { |i| puts i == 7 }
-25.times { print "-"}
-puts
-puts array.my_count
-25.times { print "-"}
-puts
-puts array.my_map(&my_proc)
-25.times { print "-"}
-puts
-p array.my_inject { |i, j| i + j }
-
+array.my_each_with_index { |i,y| p i }
 
