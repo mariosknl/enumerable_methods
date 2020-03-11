@@ -45,4 +45,6 @@ Give a ⭐️ if you like this project!
 
 >https://github.com/jubaan/m__advanced-building-blocks__enumerable-methods/blob/develop/enumerable_methods.rb
 
+>https://medium.com/@terrancekoar/inject-method-explained-ed531eff9af8
+
 
