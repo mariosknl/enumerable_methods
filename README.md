@@ -9,6 +9,7 @@ In this project I am creating methods based on the Enumerable module. The method
 # Build with
 
 - Ruby
+- VS Code (Code Runner - Extension)
 
 # Run Tests
 
