@@ -26,26 +26,32 @@ module Enumerable
     end
 
     def my_all?(arg = nil)
-      condition = true
-      return true if empty?
-
-      my_each do |i|
-        return false unless i
-        return true if i && arg
-
-        case arg
-          when Class
-            condition = false if i.is_a?(arg) == false
-          when Regexp
-            condition = false unless i&to_s&.match?(arg)
-          when String || Numeric
-            condition = false if arg != i
+      arr =self.class == Range ? Array(self) : self
+        condition = true
+        return true if  self.class != Range && empty?
+  
+        arr.my_each do |i|
+          
+          return false unless i
+          return true if i && arg
+  
+          case arg
+            when Class
+              condition = false if i.is_a?(arg) == false
+            when Regexp
+              condition = false unless i&to_s&.match?(arg)
+            when String || Numeric
+              condition = false if arg != i
+          end
+          result =yield(i) if block_given?
+          condition = result if block_given?
+          break if condition == false
         end
-        result = yield(i) if block_given?
-        condition = result if block_given?
-        break if condition == false
-      end
-      condition
+        condition
+    end
+
+    def my_none?
+      !my_all?(arg)
     end
 
     def my_count(*args)
