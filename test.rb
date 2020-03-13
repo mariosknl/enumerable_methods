@@ -25,27 +25,28 @@ module Enumerable
       my_each { |i| array << i if yield(i)}
     end
 
-    # def my_all?(*args)
-    #   block = create_block if !block_given? && args.empty?
-    #   return my_all?(&block) unless block.nil?
+    def my_all?(arg = nil)
+      condition = true
+      return true if empty?
 
-    #   if is_a Array
-    #     my_each do |x|
-    #       unless args.empty?
-    #         return false if ((args[0].is_a? Class) && !(i.is_a? datatype[0])) ||
-    #                         ((args[0].is_a? Regexp) && i.to_s.match(args[0]).nil?) ||
-    #                         !((args[0].is_a? Class) || (args[0].is_a? Regexp) || (x == args[0]))
-    #         next
-    #       end
-    #       return false unless yield(i)
-    #     end
-    #   else
-    #     my_each do |i, y|
-    #       return false if !args.empty? || (args.empty? && !yield(i, y))
-    #     end
-    #   end
-    #   true
-    # end
+      my_each do |i|
+        return false unless i
+        return true if i && arg
+
+        case arg
+          when Class
+            condition = false if i.is_a?(arg) == false
+          when Regexp
+            condition = false unless i&to_s&.match?(arg)
+          when String || Numeric
+            condition = false if arg != i
+        end
+        result = yield(i) if block_given?
+        condition = result if block_given?
+        break if condition == false
+      end
+      condition
+    end
 
     def my_count(*args)
       return to_a.length if !block_given? && args.empty?
@@ -68,8 +69,9 @@ module Enumerable
       raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
       
       acc = args.length == 2 || ((args.length == 1)) && (((args[0].is_a? String) && block_given?) || (!args[0].is_a? Symbol)) ? args[0] : nil
+      
       if !args.empty? && (args[-1].class == Symbol || args[-1].class == String)
-        to_a.my_each do |x|
+        to_a.my_each do |i|
           acc = acc.nil? ? i : acc.send(args[-1], i)
         end
         acc
@@ -79,7 +81,6 @@ module Enumerable
       end
       acc
     end
-
 end
 
 
@@ -129,17 +130,20 @@ end
 # 25.times { print "-"}
 # puts
 
-# array.all? { |i| puts i < 6 }
-# puts
-# array.my_all? { |i| puts i < 6 }
-# puts
-# array2.my_all? { |key,value| p value == "Teo"}
-# puts
-# array2.all? { |key,value| p value == "Teo"}
-# puts
-# rag.my_all? { |i| puts i < 4 }
-# puts
-# rag.all? { |i| puts i < 4 }
+array = [1,2,3,4,5]
+array2 = { :a => "marios", :b => "monkey", :c => "Teo" }
+rag = (0...5)
+array.all? { |i| puts i < 6 }
+puts
+array.my_all? { |i| puts i < 6 }
+puts
+array2.my_all? { |key,value| p value == "Teo"}
+puts
+array2.all? { |key,value| p value == "Teo"}
+puts
+rag.my_all? { |i| puts i < 4 }
+puts
+rag.all? { |i| puts i < 4 }
 # 25.times { print "-"}
 # puts
 # puts array.my_count
@@ -175,10 +179,3 @@ end
 # p rag.my_map { |i| i * i}
 # puts
 # p rag.my_map { |i| i * i}
-25.times { print "-"}
-puts
-puts (5..10).my_inject { |sum, n | sum + n }
-puts (5..10).inject { |sum, n | sum + n }
-def multiply_els
-
-end
