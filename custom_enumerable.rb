@@ -51,8 +51,21 @@ module Enumerable
     condition
   end
 
-  def my_none?
-    !my_all?(arg = nil)
+  def my_none?(arg = nil)
+    return my_none?(arg) if block_given? && !arg.nil?
+
+    if block_given?
+      to_a.my_each { |i| return false if yield i }
+    elsif arg.is_a? Regexp
+      to_a.my_each { |i| return false if i.to_s.match(arg) }
+    elsif arg.is_a? Class
+      to_s.my_each { |i| return false if i.is_a? arg }
+    elsif arg.nil?
+      to_a.my_each { |i| return false if i }
+    elsif arg
+      to_a.my_each { |i| return false if i == arg }
+    end
+    true
   end
 
   def my_any?(arg = nil)
@@ -93,7 +106,8 @@ module Enumerable
   def my_inject(*args)
     raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
 
-    acc = args.length == 2 || ((args.length == 1)) && (((args[0].is_a? String) && block_given?) 
+    acc = args.length == 2 
+    || ((args.length == 1)) && (((args[0].is_a? String) && block_given?) 
     || (!args[0].is_a? Symbol)) ? args[0] : nil
     if !args.empty? && (args[-1].class == Symbol || args[-1].class == String)
       to_a.my_each do |i|
