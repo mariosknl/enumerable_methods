@@ -104,21 +104,19 @@ module Enumerable
   end
 
   def my_inject(*args)
+    arr = to_a
     raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
 
-    acc = args.length == 2 
-    || ((args.length == 1)) && (((args[0].is_a? String) && block_given?) 
-    || (!args[0].is_a? Symbol)) ? args[0] : nil
-    if !args.empty? && (args[-1].class == Symbol || args[-1].class == String)
-      to_a.my_each do |i|
-        acc = acc.nil? ? i : acc.send(args[-1], i)
-      end
-      acc
+    memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
+    sum = if args.length == 2
+      args[1]
+    elsif !block_given? && args.length == 1 && arr.respond_to?(args[0])
+      args[0]
+    else
+      false
     end
-    to_a.my_each do |i|
-      acc = acc.nil? ? i : yield(acc, i)
-    end
-    acc
+    arr.my_each { |i| memo = sum ? memo.send(sum, i) : yield(memo, i)}
+    memo
   end
 
   def multiply_els(arr)
