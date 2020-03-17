@@ -1,6 +1,7 @@
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
+
     i = 0
     array = to_a
     while i < array.length
@@ -11,15 +12,16 @@ module Enumerable
 
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
+
     i = 0
     if is_a? Array
-      while i...length 
+      while i < length - 1
         yield [self[i], i]
         i += 1
       end
     elsif is_a? Hash
       arr = to_a
-      while i...length
+      while i < length - 1
         yield [arr[i], i]
         i += 1
       end
