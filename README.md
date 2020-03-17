@@ -3,7 +3,8 @@ Project 2: Enumerable Methods
 
 In this project I am creating methods based on the Enumerable module. The methods have the same functionality with the original ones. At the end of the custom_enumerable.rb you can find the test commented out. 
 
-<img width="570" alt="Screenshot 2020-03-11 at 10 37 38 AM" src="https://user-images.githubusercontent.com/50610396/76397784-5e785a00-6384-11ea-8db5-7948375ec40d.png">
+![code](https://user-images.githubusercontent.com/50610396/76833399-f0281180-6833-11ea-983c-f08c3dd862fa.png)
+
 
 
 # Build with
@@ -33,7 +34,9 @@ Give a ⭐️ if you like this project!
 - Microverse
 - The Odin Project
 - Codecademy
+- Hackerrank
 - Learn Ruby the Hard Way by Zed Shaw
+- [Marian Cristu](https://github.com/mariancristu)
 - [Julio Añoveros](@AnoverosJulio)
 - [Patrick Nyatindo](https://twitter.com/nyatindopatrick)
 

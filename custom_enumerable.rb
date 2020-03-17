@@ -109,13 +109,13 @@ module Enumerable
 
     memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
     sum = if args.length == 2
-      args[1]
-    elsif !block_given? && args.length == 1 && arr.respond_to?(args[0])
-      args[0]
-    else
-      false
-    end
-    arr.my_each { |i| memo = sum ? memo.send(sum, i) : yield(memo, i)}
+            args[1]
+          elsif !block_given? && args.length == 1 && arr.respond_to?(args[0])
+            args[0]
+          else
+            false
+          end
+    arr.my_each { |i| memo = sum ? memo.send(sum, i) : yield(memo, i) }
     memo
   end
 
