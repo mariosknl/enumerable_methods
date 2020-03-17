@@ -114,7 +114,7 @@ module Enumerable
   def my_inject(*args)
     arr = to_a
     raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
-    
+
     memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
     sum = if args.length == 2
             args[1]
