@@ -1,7 +1,6 @@
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
-
     i = 0
     array = to_a
     while i < array.length
@@ -12,11 +11,18 @@ module Enumerable
 
   def my_each_with_index
     return to_enum(:my_each_with_index) unless block_given?
-
     i = 0
-    array = to_a
-    for i in i...array.length
-      yield(array[i], i)
+    if is_a? Array
+      while i...length 
+        yield [self[i], i]
+        i += 1
+      end
+    elsif is_a? Hash
+      arr = to_a
+      while i...length
+        yield [arr[i], i]
+        i += 1
+      end
     end
   end
 
@@ -88,7 +94,6 @@ module Enumerable
 
   def my_count(*args)
     return to_a.length if !block_given? && args.empty?
-
     count = 0
     to_a.my_each { |i| count += 1 if i == args[0] } unless args.empty?
     to_a.my_each { |i, y| count += 1 if yield(i, y) } if block_given?
@@ -97,7 +102,6 @@ module Enumerable
 
   def my_map
     return to_enum(:my_map) unless block_given?
-
     mapped = []
     to_a.my_each { |i| mapped << yield(i) }
     mapped
@@ -106,7 +110,6 @@ module Enumerable
   def my_inject(*args)
     arr = to_a
     raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
-
     memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
     sum = if args.length == 2
             args[1]
