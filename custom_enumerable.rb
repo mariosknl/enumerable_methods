@@ -15,83 +15,67 @@ module Enumerable # rubocop:disable Style/LineLength
 
     i = 0
     if is_a? Array
-      while i < length - 1
+      while i < length
         yield [self[i], i]
         i += 1
       end
     elsif is_a? Hash
       arr = to_a
-      while i < length - 1
+      while i < length
         yield [arr[i], i]
         i += 1
       end
     end
   end
 
-  def my_select
+  def my_select(*args)
     return to_enum(:my_select) unless block_given?
 
     array = []
-    my_each { |i| array << i if yield(i) }
+    my_each { |i| p array << i if yield(i) }
   end
 
   def my_all?(arg = nil)
-    arr = self.class == Range ? Array(self) : self
-    condition = true
-    return true if self.class != Range && empty?
+    return to_enum(:my_select) unless block_given?
 
-    arr.my_each do |i|
-      return false unless i
-      return true if i && arg
+    arr = to_a
+    return true if arr.empty?
 
-      case arg
-      when Class
-        condition = false if i.is_a?(arg) == false
-      when Regexp
-        condition = false unless i & to_s&.match?(arg)
-      when String || Numeric
-        condition = false if arg != i
-      end
-      result = yield(i) if block_given?
-      condition = result if block_given?
-      break if condition == false
-    end
-    condition
-  end
-
-  def my_none?(arg = nil)
-    return my_none?(arg) if block_given? && !arg.nil?
-
-    if block_given?
-      to_a.my_each { |i| return false if yield i }
-    elsif arg.is_a? Regexp
-      to_a.my_each { |i| return false if i.to_s.match(arg) }
-    elsif arg.is_a? Class
-      to_s.my_each { |i| return false if i.is_a? arg }
-    elsif arg.nil?
-      to_a.my_each { |i| return false if i }
-    elsif arg
-      to_a.my_each { |i| return false if i == arg }
+    case arg
+    when block_given?
+      to_a.my_each { |i| return false unless yield(i) }
+    when arg.nil?
+      to_a.my_each { |i| return false unless i}
+    when arg.is_a?(Class)
+      to_a.my_each { |i| return false unless i.is_a? arg }
+    when arg.is_a?(Regexp)
+      to_a.my_each { |i| return false unless i.to_s.match(arg) }
+    else
+      to_a.my_each { |i| return false unless i == arg }
     end
     true
   end
 
-  def my_any?(arg = nil)
+  def my_any?(arg = nil, &block)
     return my_any?(arg) if block_given? && !arg.nil?
 
-    if block_given?
-      to_a.my_each { |i| return true if yield i }
-      false
-    elsif arg.is_a? Regexp
-      to_a.my_each { |i| return true if i.to_s.match(arg) }
-    elsif arg.is_a? Class
-      to_a.my_each { |i| return true if i.is_a? i == arg }
-    elsif arg
-      to_a.my_each { |i| return true if i == arg }
-    elsif arg.nil?
-      to_a.my_each { |i| return true if i }
-    end
+  if block_given?
+    to_a.my_each { |i| return true if block.call(i) }
     false
+  elsif arg.is_a? Class
+    to_a.my_each { |i| return true if i.is_a? arg }
+  elsif arg.is_a? Regexp
+    to_a.my_each { |i| return true if i.to_s.match(arg) }
+  elsif arg
+    to_a.my_each { |i| return true if i == arg }
+  elsif arg.nil?
+    to_a.my_each { |i| return true if i }
+  end
+    false
+  end
+
+  def my_none?(arg = nil, &block)
+    !my_any?(arg = nil, &block)
   end
 
   def my_count(*args)
@@ -113,7 +97,7 @@ module Enumerable # rubocop:disable Style/LineLength
 
   def my_inject(*args)
     arr = to_a
-    raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
+    return raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
 
     memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
     sum = if args.length == 2
