@@ -74,8 +74,8 @@ module Enumerable
     false
   end
 
-  def my_none?(_arg = nil, &block)
-    !my_any?(_arg = nil, &block)
+  def my_none?(arg = nil, &block)
+    !my_any?(arg, &block)
   end
 
   def my_count(*args) # rubocop:disable Metrics/CyclomaticComplexity
