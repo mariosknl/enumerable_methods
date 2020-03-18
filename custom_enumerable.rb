@@ -1,4 +1,4 @@
-module Enumerable # rubocop:disable Style/LineLength
+module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
@@ -28,14 +28,14 @@ module Enumerable # rubocop:disable Style/LineLength
     end
   end
 
-  def my_select(*args)
+  def my_select(*)
     return to_enum(:my_select) unless block_given?
 
     array = []
     my_each { |i| p array << i if yield(i) }
   end
 
-  def my_all?(arg = nil)
+  def my_all?(arg = nil) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
     return to_enum(:my_select) unless block_given?
 
     arr = to_a
@@ -45,7 +45,7 @@ module Enumerable # rubocop:disable Style/LineLength
     when block_given?
       to_a.my_each { |i| return false unless yield(i) }
     when arg.nil?
-      to_a.my_each { |i| return false unless i}
+      to_a.my_each { |i| return false unless i }
     when arg.is_a?(Class)
       to_a.my_each { |i| return false unless i.is_a? arg }
     when arg.is_a?(Regexp)
@@ -56,29 +56,29 @@ module Enumerable # rubocop:disable Style/LineLength
     true
   end
 
-  def my_any?(arg = nil, &block)
+  def my_any?(arg = nil, &block) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
     return my_any?(arg) if block_given? && !arg.nil?
 
-  if block_given?
-    to_a.my_each { |i| return true if block.call(i) }
-    false
-  elsif arg.is_a? Class
-    to_a.my_each { |i| return true if i.is_a? arg }
-  elsif arg.is_a? Regexp
-    to_a.my_each { |i| return true if i.to_s.match(arg) }
-  elsif arg
-    to_a.my_each { |i| return true if i == arg }
-  elsif arg.nil?
-    to_a.my_each { |i| return true if i }
-  end
+    if block_given?
+      to_a.my_each { |i| return true if block.call(i) }
+      false
+    elsif arg.is_a? Class
+      to_a.my_each { |i| return true if i.is_a? arg }
+    elsif arg.is_a? Regexp
+      to_a.my_each { |i| return true if i.to_s.match(arg) }
+    elsif arg
+      to_a.my_each { |i| return true if i == arg }
+    elsif arg.nil?
+      to_a.my_each { |i| return true if i }
+    end
     false
   end
 
-  def my_none?(arg = nil, &block)
-    !my_any?(arg = nil, &block)
+  def my_none?(_arg = nil, &block)
+    !my_any?(_arg = nil, &block)
   end
 
-  def my_count(*args)
+  def my_count(*args) # rubocop:disable Metrics/CyclomaticComplexity
     return to_a.length if !block_given? && args.empty?
 
     count = 0
@@ -95,19 +95,19 @@ module Enumerable # rubocop:disable Style/LineLength
     mapped
   end
 
-  def my_inject(*args)
-    arr = to_a
-    return raise ArgumentError, "wrong number of arguments (given #{args.length}, expected 0..2" if args.length > 2
+  def my_inject(*value) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+    raise ArgumentError, "wrong number of argumets (given #{value.length}, expected 0..2" if value.length > 2
 
-    memo = args.length == 2 && arr.respond_to?(arg[1]) || args.length == 1 && block_given? ? arga[0] : arr.shift
-    sum = if args.length == 2
-            args[1]
-          elsif !block_given? && args.length == 1 && arr.respond_to?(args[0])
-            args[0]
-          else
-            false
-          end
-    arr.my_each { |i| memo = sum ? memo.send(sum, i) : yield(memo, i) }
+    memo = value.length == 2 || ((value.length == 1) && (((value[0].is_a? String) && block_given?) || (!value[0].is_a? Symbol))) ? value[0] : nil # rubocop:disable Style/LineLength
+    if !value.empty? && (value[-1].class == Symbol || value[-1].class == String)
+      to_a.my_each do |x|
+        memo = memo.nil? ? x : memo.send(value[-1], x)
+      end
+      return memo
+    end
+    to_a.my_each do |x|
+      memo = memo.nil? ? x : yield(memo, x)
+    end
     memo
   end
 
