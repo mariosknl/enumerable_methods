@@ -5,10 +5,6 @@ In this project I am creating methods based on the Enumerable module. The method
 
 ![code3](https://user-images.githubusercontent.com/50610396/76962519-0c0cdf80-6928-11ea-9cd4-1683f8cc3368.png)
 
-
-
-
-
 # Build with
 
 - Ruby
@@ -16,7 +12,7 @@ In this project I am creating methods based on the Enumerable module. The method
 
 # Run Tests
 
-You can simply uncomment each one in the end of the file and run it.
+You can run test by passing arrays to the methods.
 
 👤 Marios Kanellopoulos
 - Github: [@mariosknl](https://github.com/mariosknl)

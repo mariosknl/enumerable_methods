@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -32,31 +33,32 @@ module Enumerable
     return to_enum(:my_select) unless block_given?
 
     array = []
-    my_each { |i| p array << i if yield(i) }
+    my_each { |i| return array << i if yield(i) }
   end
 
-  def my_all?(arg = nil) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
-    return to_enum(:my_select) unless block_given?
+  def my_all?(arg = nil)
+    return arg_all(arg) unless arg.nil?
 
-    arr = to_a
-    return true if arr.empty?
-
-    case arg
-    when block_given?
-      to_a.my_each { |i| return false unless yield(i) }
-    when arg.nil?
-      to_a.my_each { |i| return false unless i }
-    when arg.is_a?(Class)
-      to_a.my_each { |i| return false unless i.is_a? arg }
-    when arg.is_a?(Regexp)
-      to_a.my_each { |i| return false unless i.to_s.match(arg) }
+    condition = true
+    if block_given?
+      my_each { |i| condition = false unless yield(i) }
     else
-      to_a.my_each { |i| return false unless i == arg }
+      my_each { |i| condition = false if i.nil? || i == false }
     end
-    true
+    condition
   end
 
-  def my_any?(arg = nil, &block) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+  def arg_all(arg)
+    if arg.class == Class
+      my_all? { |i| i.is_a? arg }
+    elsif arg.class == Regexp
+      my_all? { |i| i =~ arg }
+    else
+      my_all? { |i| i == arg }
+    end
+  end
+
+  def my_any?(arg = nil, &block)
     return my_any?(arg) if block_given? && !arg.nil?
 
     if block_given?
@@ -78,7 +80,7 @@ module Enumerable
     !my_any?(arg, &block)
   end
 
-  def my_count(*args) # rubocop:disable Metrics/CyclomaticComplexity
+  def my_count(*args)
     return to_a.length if !block_given? && args.empty?
 
     count = 0
@@ -87,15 +89,19 @@ module Enumerable
     count
   end
 
-  def my_map
-    return to_enum(:my_map) unless block_given?
+  def my_map(proc = nil)
+    return to_enum(:my_map) unless block_given? || proc.class == Proc
 
     mapped = []
-    to_a.my_each { |i| mapped << yield(i) }
+    if proc.class == Proc
+      my_each { |i| mapped << proc.call(i) }
+    elsif block_given?
+      my_each { |i| mapped << yield(i) }
+    end
     mapped
   end
 
-  def my_inject(*value) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+  def my_inject(*value)
     raise ArgumentError, "wrong number of argumets (given #{value.length}, expected 0..2" if value.length > 2
 
     memo = value.length == 2 || ((value.length == 1) && (((value[0].is_a? String) && block_given?) || (!value[0].is_a? Symbol))) ? value[0] : nil # rubocop:disable Style/LineLength
@@ -110,8 +116,9 @@ module Enumerable
     end
     memo
   end
+end
+# rubocop:enable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 
-  def multiply_els(arr)
-    arr.my_inject(:*)
-  end
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
