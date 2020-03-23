@@ -33,7 +33,8 @@ module Enumerable
     return to_enum(:my_select) unless block_given?
 
     array = []
-    my_each { |i| return array << i if yield(i) }
+    my_each { |i| array << i if yield(i) }
+    array
   end
 
   def my_all?(arg = nil)
