@@ -1,7 +1,7 @@
 # enumerable_methods
 Project 2: Enumerable Methods
 
-In this project I am creating methods based on the Enumerable module. The methods have the same functionality with the original ones. At the end of the custom_enumerable.rb you can find the test commented out. 
+In this project I am creating methods based on the Enumerable module. The methods have the same functionality with the original ones.
 
 ![code3](https://user-images.githubusercontent.com/50610396/76962519-0c0cdf80-6928-11ea-9cd4-1683f8cc3368.png)
 
@@ -11,8 +11,10 @@ In this project I am creating methods based on the Enumerable module. The method
 - VS Code (Code Runner - Extension)
 
 # Run Tests
+- Firstly you have to clone the repository in your local machine. 
+- In order to  run tests, navigate to your project directory and  use this command in the terminal:  
+rspec spec/custom_enumerable_spec.rb
 
-You can run test by passing arrays to the methods.
 
 👤 Marios Kanellopoulos
 - Github: [@mariosknl](https://github.com/mariosknl)
