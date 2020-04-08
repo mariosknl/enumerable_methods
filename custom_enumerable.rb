@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -105,7 +105,7 @@ module Enumerable
   def my_inject(*value)
     raise ArgumentError, "wrong number of argumets (given #{value.length}, expected 0..2" if value.length > 2
 
-    memo = value.length == 2 || ((value.length == 1) && (((value[0].is_a? String) && block_given?) || (!value[0].is_a? Symbol))) ? value[0] : nil # rubocop:disable Style/LineLength
+    memo = value.length == 2 || ((value.length == 1) && (((value[0].is_a? String) && block_given?) || (!value[0].is_a? Symbol))) ? value[0] : nil # rubocop:disable Layout/LineLength
     if !value.empty? && (value[-1].class == Symbol || value[-1].class == String)
       to_a.my_each do |x|
         memo = memo.nil? ? x : memo.send(value[-1], x)
@@ -118,7 +118,7 @@ module Enumerable
     memo
   end
 end
-# rubocop:enable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
 def multiply_els(arr)
   arr.my_inject(:*)

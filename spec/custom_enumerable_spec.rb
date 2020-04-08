@@ -21,6 +21,10 @@ RSpec.describe Enumerable do
       arr3.my_each { |i| arr << i }
       expect(arr).to eq arr3
     end
+    it 'should not return an array of the values' do
+      arr3.my_each
+      expect(arr).not_to eq arr3
+    end
   end
 
   describe '#my_each_with_index' do
@@ -55,8 +59,8 @@ RSpec.describe Enumerable do
     it 'returns true if an empty array is given' do
       expect(arr.my_all?).to eq true
     end
-    it 'return false if the array is falsy' do
-      expect(boo.my_all?).to eq false
+    it 'should not return true if the array is falsy' do
+      expect(boo.my_all?).not_to eq true
     end
     it 'return true if everything matches the class' do
       expect(arr3.my_all?(String)).to eq true
@@ -70,8 +74,8 @@ RSpec.describe Enumerable do
     it 'returns true if any value passes the test block' do
       expect(arr2.my_any? { |i| i > 2 }).to eq true
     end
-    it 'returns false for falsy array' do
-      expect(boo.my_any?).to eq false
+    it 'should not return true for falsy array' do
+      expect(boo.my_any?).not_to eq true
     end
     it 'returns true if any of the elements match the pattern' do
       expect(arr3.my_any?(/c/)).to eq true
@@ -85,8 +89,8 @@ RSpec.describe Enumerable do
     it 'returns false if all elements matches the condition' do
       expect(arr2.my_none? { |i| i > 0 }).to eq false
     end
-    it 'returns true if an empty array is given' do
-      expect(arr.my_none?).to eq true
+    it 'should not return false if the array is empty' do
+      expect(arr.my_none?).not_to eq false
     end
     it 'return true if the array is falsy' do
       expect(boo.my_none?).to eq true
@@ -126,6 +130,9 @@ RSpec.describe Enumerable do
     end
     it 'return the results of the array multiplied by 3' do
       expect(arr2.my_inject(3, :*)).to eq 360
+    end
+    it 'The result should not be an array' do
+      expect(arr2.my_inject(:*).class).not_to be_a Array
     end
   end
 end
